@@ -17,6 +17,38 @@ powerup_colors = {
     "Escudo": (255, 255, 0),           # Celeste
     "Inversion-controles": (0, 100, 0) # Verde oscuro
 }
+#Forma de la nave
+shape_pixels = [
+    (6, 19), (7, 19), (8, 19), (9, 19), (10, 19), (11, 19), (12, 19), (13, 19),  # Primer nivel
+    (2, 18), (3, 18), (4, 18), (5, 18), (6, 18), (7, 18), (8, 18), (9, 18), (10, 18), (11, 18), (12, 18), (13, 18), (14, 18), (15, 18), (16, 18), (17, 18), # Segundo nivel
+    (0, 17), (1, 17), (2, 17), (3, 17), (4, 17), (5, 17), (6, 17), (7, 17), (8, 17), (9, 17), (10, 17), (11, 17), (12, 17), (13, 17), (14, 17), (15, 17), (16, 17), (17, 17), (18, 17), (19, 17), # Tercer nivel
+    (0, 16), (1, 16), (2, 16), (3, 16), (4, 16), (5, 16), (6, 16), (7, 16), (8, 16), (9, 16), (10, 16), (11, 16), (12, 16), (13, 16), (14, 16), (15, 16), (16, 16), (17, 16), (18, 16), (19, 16), # Cuarto nivel
+    (0, 15), (1, 15), (2, 15), (3, 15), (4, 15), (5, 15), (6, 15), (7, 15), (8, 15), (9, 15), (10, 15), (11, 15), (12, 15), (13, 15), (14, 15), (15, 15), (16, 15), (17, 15), (18, 15), (19, 15), # Quinto nivel
+    (0, 14), (1, 14), (2, 14), (3, 14), (4, 14), (5, 14), (6, 14), (7, 14), (8, 14), (9, 14), (10, 14), (11, 14), (12, 14), (13, 14), (14, 14), (15, 14), (16, 14), (17, 14), (18, 14), (19, 14), # Sexto nivel
+    (1, 13), (2, 13), (3, 13), (4, 13), (5, 13), (6, 13), (7, 13), (8, 13), (9, 13), (10, 13), (11, 13), (12, 13), (13, 13), (14, 13), (15, 13), (16, 13), (17, 13), (18, 13), # Séptimo nivel
+    (2, 12), (3, 12), (4, 12), (5, 12), (7, 12), (8, 12), (9, 12), (10, 12), (11, 12), (12, 12), (14, 12), (15, 12), (16, 12), (17, 12), # Octavo nivel
+    (2, 11), (3, 11), (4, 11), (5, 11), (7, 11), (8, 11), (9, 11), (10, 11), (11, 11), (12, 11), (14, 11), (15, 11), (16, 11), (17, 11), # Noveno nivel
+    (3, 10), (4, 10), (7, 10), (8, 10), (9, 10), (10, 10), (11, 10), (12, 10), (15, 10), (16, 10), # Decimo nivel
+    (3, 9), (4, 9), (8, 9), (9, 9), (10, 9), (11, 9), (15, 9), (16, 9), # Undecimo nivel
+    (3, 8), (4, 8), (8, 8), (9, 8), (10, 8), (11, 8), (15, 8), (16, 8), # Duodecimo nivel
+    (3, 7), (4, 7), (9, 7), (10, 7), (15, 7), (16, 7), # Decimotercer nivel
+    (3, 6), (4, 6), (9, 6), (10, 6), (15, 6), (16, 6), # Decimocuarto nivel
+    (3, 5), (4, 5), (9, 5), (10, 5), (15, 5), (16, 5), # Decimoquinto nivel
+    (9, 4), (10, 4), # Decimosexto nivel
+    (9, 3), (10, 3), # Decimoseptimo nivel
+    (9, 2), (10, 2), # Decimooctavo nivel
+    (9, 1), (10, 1), # Decimonoveno nivel
+    (9, 0), (10, 0), # Vigesimo nivel
+]
+
+
+# Dibujar la nave en la pantalla
+def draw_ship(frame, nave_x, nave_y, shape_pixels):
+    for dx, dy in shape_pixels:
+        # Ajustar las coordenadas relativas para que se dibujen en la pantalla
+        x = int(nave_x + dx*2.1)
+        y = int(nave_y + dy*2.1)  # Restar porque y aumenta hacia abajo
+        cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)  # Usamos verde para dibujar la nave
 
 
 # Configuración de MediaPipe
@@ -122,33 +154,33 @@ while True:
             if power_up_activo == "Laser": # Disparo láser
                 tiempo_actual = time.time() * 1000  # Convertimos a milisegundos
                 if tiempo_actual - ultimo_disparo >= 1:  # Disparo cada 1 ms
-                    balas.append([nave_x, nave_y - nave_height // 2, 0])
+                    balas.append([nave_x + 20, nave_y - nave_height // 2, 0])
                     ultimo_disparo = tiempo_actual
                 
             elif not boca_abierta_anterior:  # Disparo normal, doble, triple y perforante
                 if power_up_activo == "Rafagas":
                 
                     for offset in [-30, 0, 30]:
-                        balas.append([nave_x, nave_y - nave_height + offset // 2, 0])
+                        balas.append([nave_x + 20, nave_y - nave_height + offset // 2, 0])
 
                 elif power_up_activo == "Disparo-triple":
                     angulo = 20  # Ángulo de desviación en grados
                     offset_x = 10  # Separación horizontal
 
                     # Disparo central (recto)
-                    balas.append([nave_x, nave_y - nave_height // 2, 0])  # El tercer valor es la inclinación (0 = recto)
+                    balas.append([nave_x + 20, nave_y - nave_height // 2, 0])  # El tercer valor es la inclinación (0 = recto)
 
                     # Disparo inclinado a la izquierda
-                    balas.append([nave_x - offset_x, nave_y - nave_height // 2, -angulo])
+                    balas.append([nave_x - offset_x + 10, nave_y - nave_height // 2, -angulo])
 
                     # Disparo inclinado a la derecha
-                    balas.append([nave_x + offset_x, nave_y - nave_height // 2, angulo])
+                    balas.append([nave_x + offset_x + 30, nave_y - nave_height // 2, angulo])
 
                 elif power_up_activo == "Disparo-doble":
-                    balas.append([nave_x - 20, nave_y - nave_height // 2, 0])
-                    balas.append([nave_x + 20, nave_y - nave_height // 2, 0])
+                    balas.append([nave_x + 5, nave_y - nave_height // 2, 0])
+                    balas.append([nave_x + 35, nave_y - nave_height // 2, 0])
                 else:
-                    balas.append([nave_x, nave_y - nave_height // 2, 0])
+                    balas.append([nave_x + 20, nave_y - nave_height // 2, 0])
 
         boca_abierta_anterior = mar > MOUTH_THRESHOLD
 
@@ -165,7 +197,7 @@ while True:
     if mover_izquierda:
         nave_x += 7
 
-    nave_x = max(nave_width // 2, min(win_width - nave_width // 2, nave_x))
+    nave_x = max(nave_width // 2 - 20, min(win_width - nave_width + 6, nave_x))
 
     if disparar:
         balas.append([nave_x, nave_y - nave_height // 2])
@@ -227,8 +259,8 @@ while True:
                 destruccion_bloques += 1
 
                 if destruccion_bloques >= 3:  
-                    tipo = random.choice(powerup_types)  # Elegir un tipo aleatorio
-                    #tipo = "Disparo-triple"
+                    #tipo = random.choice(powerup_types)  # Elegir un tipo aleatorio
+                    tipo = "Escudo"
                     powerups.append([bx, by, 20, tipo])  # Guardar con su tipo
                     destruccion_bloques = 0  # Reiniciar el contador
                 break
@@ -300,8 +332,7 @@ while True:
 
 
     # Dibujar la nave
-    cv2.rectangle(game_screen, (nave_x - nave_width // 2, nave_y - nave_height // 2),
-                  (nave_x + nave_width // 2, nave_y + nave_height // 2), (0, 255, 0), -1)
+    draw_ship(game_screen, nave_x, nave_y, shape_pixels)
 
     # Dibujar las balas, bloques y powerups
     for x, y, angulo in balas:
@@ -339,7 +370,7 @@ while True:
     if power_up_activo == "Escudo":
         radio = nave_width  # Radio del escudo, del mismo tamaño que la nave
         grosor = 2  # Grosor del círculo
-        cv2.circle(game_screen, (nave_x, nave_y), radio - 10, (255, 255, 0), grosor)  # Amarillo (BGR)
+        cv2.circle(game_screen, (nave_x + 20, nave_y + 25), radio - 10, (255, 255, 0), grosor)  # Amarillo (BGR)
 
 
 
