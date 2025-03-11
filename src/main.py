@@ -48,7 +48,7 @@ def draw_ship(frame, nave_x, nave_y, shape_pixels):
         # Ajustar las coordenadas relativas para que se dibujen en la pantalla
         x = int(nave_x + dx*2.1)
         y = int(nave_y + dy*2.1)  # Restar porque y aumenta hacia abajo
-        cv2.circle(frame, (x, y), 1, (0, 255, 0), -1)  # Usamos verde para dibujar la nave
+        cv2.circle(frame, (x, y), 2, (0, 255, 0), -1)  # Usamos verde para dibujar la nave
 
 
 # Configuración de MediaPipe
@@ -100,7 +100,7 @@ for i in range(line_count):  # Crear líneas
     lines.append([x, y, speed])
 
 nave_width, nave_height = 50, 30
-nave_x, nave_y = win_width // 2, win_height - nave_height - 10  
+nave_x, nave_y = win_width // 2, win_height - nave_height - 20  
 
 balas = []
 bloques = []
@@ -214,17 +214,17 @@ while True:
   
 
     if time.time() - last_bloque_spawn > 2.5:
-        bloques.append([random.randint(20, win_width - 20), 0, random.randint(20, 50)])
+        bloques.append([random.randint(20, win_width - 20), 0, random.randint(20, 50), random.randint(-2, 2), random.randint(3, 10)])
         last_bloque_spawn = time.time()
 
     nuevos_bloques = []  # Lista temporal para guardar los bloques que siguen en la pantalla
 
     for bloque in bloques:
-        x, y, tam = bloque  # Extraer las coordenadas y tamaño del bloque
+        x, y, tam, pos, radTam = bloque  # Extraer las coordenadas y tamaño del bloque
         y += vel_bloque  # Mover el bloque hacia abajo
         
         if y + tam < win_height - nave_height - 10:  # Solo añadimos los bloques que no han salido de la pantalla
-            nuevos_bloques.append([x, y, tam])
+            nuevos_bloques.append([x, y, tam, pos, radTam])
         else:
             if power_up_activo == "Escudo":
                 escudo_activo = None
@@ -249,7 +249,7 @@ while True:
     nuevas_balas = []  # Lista para las balas que no han destruido bloques
     nuevos_powerups = []  # Lista temporal para powerups
 
-    for bx, by, tam in bloques:
+    for bx, by, tam, pos, radTam in bloques:
         colision = False
         for bala in balas:
             bala_x, bala_y, angulo = bala
@@ -266,7 +266,7 @@ while True:
                 break
 
         if not colision:
-            nuevos_bloques.append([bx, by, tam])
+            nuevos_bloques.append([bx, by, tam, pos, radTam])
 
         else:
             for b in balas:
@@ -332,7 +332,18 @@ while True:
 
 
     # Dibujar la nave
-    draw_ship(game_screen, nave_x, nave_y, shape_pixels)
+    offset_x = 16
+    offset_y = 35
+    draw_ship(game_screen, nave_x, nave_y - 5, shape_pixels)
+
+    cv2.rectangle(game_screen, (nave_x + offset_x + random.choice([-2, -1, 0, 1, 2]), nave_y + offset_y + random.choice([-2, -1, 0, 1, 2])), 
+                  (nave_x + offset_x + 8 + random.choice([-2, -1, 0, 1, 2]), nave_y + offset_y + 8 + random.choice([-2, -1, 0, 1, 2])), (0, 0, 255), -1)
+
+    cv2.rectangle(game_screen, (nave_x + offset_x + 2 + random.choice([-2, -1, 0, 1, 2]), nave_y + offset_y + random.choice([-2, -1, 0, 1, 2])), 
+                  (nave_x + offset_x + 6 + random.choice([-2, -1, 0, 1, 2]), nave_y + offset_y + 8 + random.choice([-2, -1, 0, 1, 2])), (0, 200, 255), -1)
+    
+    cv2.rectangle(game_screen, (nave_x + offset_x + 3 + random.choice([-2, -1, 0, 1, 2]), nave_y + offset_y + 8 + random.choice([-2, -1, 0, 1, 2])), 
+                  (nave_x + offset_x + 5 + random.choice([-2, -1, 0, 1, 2]), nave_y + offset_y + 10 + random.choice([-2, -1, 0, 1, 2])), (0, 255, 255), -1)
 
     # Dibujar las balas, bloques y powerups
     for x, y, angulo in balas:
@@ -341,9 +352,15 @@ while True:
         else:
             cv2.circle(game_screen, (x, y), 5, (255, 255, 255), -1)
 
-    for bx, by, tam in bloques:
-        cv2.rectangle(game_screen, (bx - tam // 2, by - tam // 2), 
-                      (bx + tam // 2, by + tam // 2), (0, 0, 255), -1)
+    for bx, by, tam,pos, radTam in bloques:
+        cv2.circle(game_screen, (bx, by), tam // 2, (0, 0, 75), -1)
+
+        cv2.circle(game_screen, (bx + pos, by - pos), 
+                   tam // 2 - radTam, (0, 0, 200), 2)
+        
+        cv2.circle(game_screen, (bx - pos, by + pos), 
+                   tam // 2 - radTam, (0, 165, 255), 2)
+
 
     for px, py, tam, tipo in powerups:
         color = powerup_colors.get(tipo, (255, 255, 255))  # Blanco por defecto si hay error
@@ -368,14 +385,14 @@ while True:
 
     # Dibujar el escudo si está activo con efecto de parpadeo
     if power_up_activo == "Escudo":
-        radio = nave_width  # Radio del escudo, del mismo tamaño que la nave
+        radio = nave_width - 22  # Radio del escudo, del mismo tamaño que la nave
         grosor = 2  # Grosor del círculo
-        cv2.circle(game_screen, (nave_x + 20, nave_y + 25), radio - 10, (255, 255, 0), grosor)  # Amarillo (BGR)
+        cv2.circle(game_screen, (nave_x + 19, nave_y + 19), radio, (255, 255, 0), grosor)  # Amarillo (BGR)
 
 
 
 
-    cv2.rectangle(game_screen, (0, win_height - nave_height - 30), (win_width, win_height), (255, 255, 255), 2)
+    cv2.rectangle(game_screen, (-10, win_height - nave_height - 30), (win_width + 10, win_height + 10), (150, 150, 150), 2)
     cv2.imshow("Juego Space Shooter", game_screen)
     cv2.imshow("Camara (controles)", frame_cam)
 
