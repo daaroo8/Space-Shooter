@@ -18,7 +18,7 @@ Follow these steps to get the game running on your local machine:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/Space-Shooter.git
+   git clone https://github.com/daaroo8/Space-Shooter.git
    cd Space-Shooter
    ```
 
