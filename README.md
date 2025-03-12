@@ -38,7 +38,7 @@ Follow these steps to get the game running on your local machine:
 4. Run the game:
 
    ```bash
-   python space_shooter.py  # Or the appropriate file to start the game
+   python src/main.py  # Or the appropriate file to start the game
    ```
 
 ## How it works
