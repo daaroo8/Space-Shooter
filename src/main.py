@@ -259,8 +259,8 @@ while True:
                 destruccion_bloques += 1
 
                 if destruccion_bloques >= 3:  
-                    #tipo = random.choice(powerup_types)  # Elegir un tipo aleatorio
-                    tipo = "Escudo"
+                    tipo = random.choice(powerup_types)  # Elegir un tipo aleatorio
+                    #tipo = "Escudo"
                     powerups.append([bx, by, 20, tipo])  # Guardar con su tipo
                     destruccion_bloques = 0  # Reiniciar el contador
                 break
