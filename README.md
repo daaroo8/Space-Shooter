@@ -18,7 +18,7 @@ Follow these steps to get the game running on your local machine:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/yourusername/Space-Shooter.git
+   git clone https://github.com/daaroo8/Space-Shooter.git
    cd Space-Shooter
    ```
 
@@ -38,7 +38,7 @@ Follow these steps to get the game running on your local machine:
 4. Run the game:
 
    ```bash
-   python space_shooter.py  # Or the appropriate file to start the game
+   python src/main.py  # Or the appropriate file to start the game
    ```
 
 ## How it works
