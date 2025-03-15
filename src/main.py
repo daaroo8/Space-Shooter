@@ -41,7 +41,6 @@ shape_pixels = [
     (9, 0,(100, 100, 100)), (10, 0,(100, 100, 100)), # Vigesimo nivel
 ]
 
-#TODO añadir al for el color y en shape_pixels añadir el color
 # Dibujar la nave en la pantalla
 def draw_ship(frame, nave_x, nave_y, shape_pixels):
     for dx, dy, color in shape_pixels:
@@ -328,7 +327,7 @@ while True:
         lines[i] = [x, y, speed]  # Actualizar la posición de la línea
 
         # Dibujar la línea en el fondo (con un color gris)
-        cv2.line(game_screen, (x, y), (x, y + 10), (25, 25, 25), 2)
+        cv2.line(game_screen, (x, y), (x, y + 10), (50, 50, 50), 2)
 
 
     # Dibujar la nave
