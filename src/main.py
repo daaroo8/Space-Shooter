@@ -117,7 +117,7 @@ powerup_types = ["Laser", "Disparo-triple", "Disparo-doble", "Bala-perforante",
 tiempo_power_up = 5  # Duración de los powerups en milisegundos
 
 power_up_activo = None
-tiempo_inicio_mensaje = None  # Para mostrar "+1❤" al recoger curación
+tiempo_inicio_mensaje = None 
 tiempo_inicio_power_up = 0
 ultimo_disparo = time.time() * 1000  # Tiempo en milisegundos
 
